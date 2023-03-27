@@ -29,7 +29,6 @@ public class Solution {
         while (!queue.isEmpty()) { //dopoki kolejka nie bedzie pusta
             iterations++;
             GraphNode v = queue.poll(); //bierzemy pierwszy element z kolejki
-            //Main.show(v.getBoard());
             if (v.getOperation() != null) {
                 path += v.getOperation(); //dodajemy do sciezki operator
             }

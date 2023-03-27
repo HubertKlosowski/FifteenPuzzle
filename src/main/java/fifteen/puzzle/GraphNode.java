@@ -79,6 +79,7 @@ public class GraphNode {
         for (int i = 0; i < 4; i++) {
             if (createChild(this, operations.charAt(i)) != null) { //jesli sasiad nie jest nullem
                 GraphNode child = createChild(this, operations.charAt(i));
+                assert child != null;
                 child.setParent(this);
                 neigh.add(child);
             }

@@ -36,27 +36,32 @@ public class Main {
         Solution sol = new Solution(root);
         String oper = "LRUD";
         long sec, sec1;
-
         sec = System.currentTimeMillis();
-        if (!sol.bfs(root, oper)) {
-            System.out.println(sol.getPath());
+        if (sol.bfs(root, oper)) {
+            sec1 = System.currentTimeMillis();
+            String[] stats = { //jeszcze jakies stany
+                    String.valueOf(sol.getPath().length()),
+                    String.valueOf(sol.getIterations()),
+                    String.valueOf(sec1 - sec)
+            };
+            String[] solution = {
+                    String.valueOf(sol.getPath().length()),
+                    sol.getPath()
+            };
+            try {
+                saveStatsToFile(statsFile, stats);
+                saveSolutionToFile(solutionFile, solution);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        sec1 = System.currentTimeMillis();
-
-        String[] stats = {
-                String.valueOf(sol.getPath().length()),
-                String.valueOf(sol.getIterations()),
-                String.valueOf(sec1 - sec)
-        };
-        String[] solution = {
-                String.valueOf(sol.getPath().length()),
-                sol.getPath()
-        };
-        try {
-            saveStatsToFile(statsFile, stats);
-            saveSolutionToFile(solutionFile, solution);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        else {
+            System.out.println("Blad!! BFS nie znalazl zadnych rozwiazan.");
+            try {
+                saveSolutionToFile(solutionFile, new String[]{"-1"});
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         sc.close();
     }
