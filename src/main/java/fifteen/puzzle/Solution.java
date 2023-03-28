@@ -1,24 +1,43 @@
 package fifteen.puzzle;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class Solution {
     private final GraphNode root;
     private GraphNode goal;
-    private String path = "";
+    private StringBuilder path = new StringBuilder();
     private Queue<GraphNode> queue = new LinkedList<>();
     private Set<GraphNode> set = new HashSet<>();
     private Stack<GraphNode> stack = new Stack<>();
+
     private long iterations = 0;
 
     public Solution(GraphNode root) {
         this.root = root; //pierwszy element
         setGoal(); //ustawiamy docelowy uklad
+    }
+
+    public boolean dfs(GraphNode node, String operations) {
+        if (Arrays.deepEquals(node.getBoard(), getGoal().getBoard()))
+            return true;
+        stack.push(node);
+        while (!stack.isEmpty()) {
+            iterations++;
+            GraphNode v = stack.pop();
+            set.add(v);
+            ArrayList<GraphNode> neigh = v.getNeighbours(operations);
+            Collections.reverse(neigh);
+            for (GraphNode el : neigh) {
+                if (Arrays.deepEquals(el.getBoard(), getGoal().getBoard())) {
+                    return true;
+                } if (!set.contains(el) && !stack.contains(el)) {
+                    path.append(el.getOperation()); //poprawic bo zapisuje wszystkie kroki
+                    stack.push(el);
+                }
+            }
+        }
+        set.clear();
+        return false;
     }
 
     public boolean bfs(GraphNode node, String operations) {
@@ -29,13 +48,11 @@ public class Solution {
         while (!queue.isEmpty()) { //dopoki kolejka nie bedzie pusta
             iterations++;
             GraphNode v = queue.poll(); //bierzemy pierwszy element z kolejki
-            if (v.getOperation() != null) {
-                path += v.getOperation(); //dodajemy do sciezki operator
-            }
             for (GraphNode el : v.getNeighbours(operations)) { //sprawdzamy sasiadow
                 if (Arrays.deepEquals(el.getBoard(), getGoal().getBoard())) { //czy boardy sie zgadzaja
                     return true;
                 } if (!set.contains(el)) { //zwraca pozycje w stosie, a gdy -1 to nie ma
+                    path.append(el.getOperation()); //poprawic bo zapisuje wszystkie kroki
                     queue.add(el); //usuwamy z kolejki
                     set.add(el); //dodajemy do stosu
                 }
@@ -46,9 +63,8 @@ public class Solution {
     }
 
     public String getPath() {
-        StringBuilder sb = new StringBuilder(path);
-        sb.reverse();
-        return sb.toString();
+        path.reverse();
+        return path.toString();
     }
 
     public void setGoal() { //ustawia docelowy uklad (tylko boarda)
@@ -70,5 +86,9 @@ public class Solution {
 
     public long getIterations() {
         return iterations;
+    }
+
+    public void setIterations(long iterations) {
+        this.iterations = iterations;
     }
 }

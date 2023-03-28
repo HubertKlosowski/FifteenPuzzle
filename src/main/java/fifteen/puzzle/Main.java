@@ -11,9 +11,6 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        for (String el : args) {
-            System.out.println(el);
-        }
         System.out.print("Podaj nazwe pliku z ukladem poczatkowym: ");
         Scanner sc = new Scanner(System.in);
         String fileName = sc.nextLine();
@@ -35,32 +32,64 @@ public class Main {
         root.setBoard(board);
         Solution sol = new Solution(root);
         String oper = "LRUD";
-        long sec, sec1;
-        sec = System.currentTimeMillis();
-        if (sol.bfs(root, oper)) {
-            sec1 = System.currentTimeMillis();
-            String[] stats = { //jeszcze jakies stany
-                    String.valueOf(sol.getPath().length()),
-                    String.valueOf(sol.getIterations()),
-                    String.valueOf(sec1 - sec)
-            };
-            String[] solution = {
-                    String.valueOf(sol.getPath().length()),
-                    sol.getPath()
-            };
-            try {
-                saveStatsToFile(statsFile, stats);
-                saveSolutionToFile(solutionFile, solution);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        long sec = System.currentTimeMillis(), sec1;
+        int wybor = 0;
+        if (wybor == 0) {
+            if (sol.bfs(root, oper)) {
+                sec1 = System.currentTimeMillis();
+                String[] stats = { //jeszcze jakies stany
+                        String.valueOf(sol.getPath().length()),
+                        String.valueOf(sol.getIterations()),
+                        String.valueOf(sec1 - sec)
+                };
+                String[] solution = {
+                        String.valueOf(sol.getPath().length()),
+                        sol.getPath()
+                };
+                try {
+                    saveStatsToFile(statsFile, stats);
+                    saveSolutionToFile(solutionFile, solution);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                sol.setIterations(0);
+            }
+            else {
+                System.out.println("Blad!! BFS nie znalazl zadnych rozwiazan.");
+                try {
+                    saveSolutionToFile(solutionFile, new String[]{"-1"});
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-        else {
-            System.out.println("Blad!! BFS nie znalazl zadnych rozwiazan.");
-            try {
-                saveSolutionToFile(solutionFile, new String[]{"-1"});
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        else if (wybor == 1) {
+            if (sol.dfs(root, oper)) {
+                sec1 = System.currentTimeMillis();
+                String[] stats = { //jeszcze jakies stany
+                        String.valueOf(sol.getPath().length()),
+                        String.valueOf(sol.getIterations()),
+                        String.valueOf(sec1 - sec)
+                };
+                String[] solution = {
+                        String.valueOf(sol.getPath().length()),
+                        sol.getPath()
+                };
+                try {
+                    saveStatsToFile(statsFile, stats);
+                    saveSolutionToFile(solutionFile, solution);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                sol.setIterations(0);
+            }
+            else {
+                System.out.println("Blad!! DFS nie znalazl zadnych rozwiazan.");
+                try {
+                    saveSolutionToFile(solutionFile, new String[]{"-1"});
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         sc.close();
