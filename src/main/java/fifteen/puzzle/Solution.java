@@ -1,6 +1,14 @@
 package fifteen.puzzle;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
 
 public class Solution {
     private final GraphNode root;
@@ -9,8 +17,9 @@ public class Solution {
     private Queue<GraphNode> queue = new LinkedList<>();
     private Set<GraphNode> set = new HashSet<>();
     private Stack<GraphNode> stack = new Stack<>();
-    private long lso = 0; //liczba stanow odwiedzonych
-    private long lsp = 0; //liczba stanow przetworzonych
+    private PriorityQueue<GraphNode> priorityQueue = new PriorityQueue<>();
+    private long LSO = 0; //liczba stanow odwiedzonych
+    private long LSP = 0; //liczba stanow przetworzonych
 
     public Solution(GraphNode root) {
         this.root = root; //pierwszy element
@@ -22,20 +31,18 @@ public class Solution {
             return true;
         stack.push(node);
         while (!stack.isEmpty()) {
-            lso++;
+            LSO++;
             GraphNode v = stack.pop();
             set.add(v);
             ArrayList<GraphNode> neigh = v.getNeighbours(operations);
             Collections.reverse(neigh);
             for (GraphNode el : neigh) {
                 if (Arrays.deepEquals(el.getBoard(), getGoal().getBoard())) {
+                    setPath(el);
                     return true;
                 } if (!set.contains(el) && !stack.contains(el)) {
                     if (Arrays.deepEquals(el.getBoard(), getGoal().getBoard())) {
                         return true;
-                    }
-                    if (v.getParent() != null && v.getParent().getOperation() != null) {
-                        path.append(v.getParent().getOperation()); //poprawic bo zapisuje wszystkie kroki
                     }
                     stack.push(el);
                 }
@@ -50,17 +57,16 @@ public class Solution {
             return true;
         queue.add(node); //dodanie do kolejki
         set.add(node); //dodanie do stosu
+        int depth = 0;
         while (!queue.isEmpty()) { //dopoki kolejka nie bedzie pusta
-            lso++;
+            LSO++;
             GraphNode v = queue.poll(); //bierzemy pierwszy element z kolejki
             for (GraphNode el : v.getNeighbours(operations)) { //sprawdzamy sasiadow
                 if (Arrays.deepEquals(el.getBoard(), getGoal().getBoard())) { //czy boardy sie zgadzaja
-                    Main.show(el.getBoard());
+                    setPath(el);
                     return true;
                 } if (!set.contains(el)) { //zwraca pozycje w stosie, a gdy -1 to nie ma
-                    if (v.getParent() != null && v.getParent().getOperation() != null) {
-                        path.append(v.getParent().getOperation()); //poprawic bo zapisuje wszystkie kroki
-                    }
+                    depth++;
                     queue.add(el); //usuwamy z kolejki
                     set.add(el); //dodajemy do stosu
                 }
@@ -71,8 +77,16 @@ public class Solution {
     }
 
     public String getPath() {
-        path.reverse();
         return path.toString();
+    }
+
+    public void setPath(GraphNode goal) {
+        while (goal.getParent() != null) {
+            LSP++;
+            path.append(goal.getOperation());
+            goal = goal.getParent();
+        }
+        path.reverse();
     }
 
     private void setGoal() { //ustawia docelowy uklad (tylko boarda)
@@ -92,19 +106,19 @@ public class Solution {
         return goal;
     }
 
-    public long getLso() {
-        return lso;
+    public long getLSO() {
+        return LSO;
     }
 
-    public void setLso(long lso) {
-        this.lso = lso;
+    public void setLSO(long LSO) {
+        this.LSO = LSO;
     }
 
-    public long getLsp() {
-        return lsp;
+    public long getLSP() {
+        return LSP;
     }
 
-    public void setLsp(long lsp) {
-        this.lsp = lsp;
+    public void setLSP(long LSP) {
+        this.LSP = LSP;
     }
 }

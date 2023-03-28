@@ -36,6 +36,16 @@ public class GraphNode {
         return res;
     }
 
+    public GraphNode getFirstNode(GraphNode node, int depth) throws Exception {
+        while (depth != 0) {
+            if (node.getParent() == null)
+                throw new Exception();
+            node = node.getParent();
+            depth--;
+        }
+        return node;
+    }
+
     private static byte[][] copy(byte[][] old) {
         if (old == null) {
             return null;

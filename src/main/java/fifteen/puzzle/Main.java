@@ -6,16 +6,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Scanner;
 
 
 public class Main {
     public static void main(String[] args) {
-        System.out.print("Podaj nazwe pliku z ukladem poczatkowym: ");
-        Scanner sc = new Scanner(System.in);
-        String fileName = sc.nextLine();
-        String statsFile = "stats.txt";
-        String solutionFile = "solution.txt";
+        String strategy = args[0];
+        String oper = args[1];
+        String fileName = args[2];
+        String solutionFile = args[3];
+        String statsFile = args[4];
         byte[][] board;
         try {
             board = loadFromFile(fileName);
@@ -31,70 +32,57 @@ public class Main {
         GraphNode root = new GraphNode((byte) board.length, (byte) board[0].length);
         root.setBoard(board);
         Solution sol = new Solution(root);
-        String oper = "LRUD";
-        long sec = System.currentTimeMillis(), sec1;
-        int wybor = 0;
-        if (wybor == 0) {
-            if (sol.bfs(root, oper)) {
-                sec1 = System.currentTimeMillis();
-                String[] stats = { //jeszcze jakies stany
-                        String.valueOf(sol.getPath().length()),
-                        String.valueOf(sol.getLso()),
-                        String.valueOf(sec1 - sec)
-                };
-                String[] solution = {
-                        String.valueOf(sol.getPath().length()),
-                        sol.getPath()
-                };
-                try {
-                    saveStatsToFile(statsFile, stats);
-                    saveSolutionToFile(solutionFile, solution);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                sol.setLso(0);
-                sol.setLsp(0);
-            }
-            else {
-                System.out.println("Blad!! BFS nie znalazl zadnych rozwiazan.");
-                try {
-                    saveSolutionToFile(solutionFile, new String[]{"-1"});
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        double sec = System.currentTimeMillis(), sec1;
+        if (Objects.equals(strategy, "bfs") && sol.bfs(root, oper)) {
+            sec1 = System.currentTimeMillis();
+            double x = (sec1 - sec) / 1000;
+            String[] stats = { //jeszcze jakies stany
+                    String.valueOf(sol.getPath().length()),
+                    String.valueOf(sol.getLSO()),
+                    String.valueOf(sol.getLSP()),
+                    String.format("%.3f", x)
+            };
+            String[] solution = {
+                    String.valueOf(sol.getPath().length()),
+                    sol.getPath()
+            };
+            try {
+                saveStatsToFile(statsFile, stats);
+                saveSolutionToFile(solutionFile, solution);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-        else if (wybor == 1) {
-            if (sol.dfs(root, oper)) {
-                sec1 = System.currentTimeMillis();
-                String[] stats = { //jeszcze jakies stany
-                        String.valueOf(sol.getPath().length()),
-                        String.valueOf(sol.getLso()),
-                        String.valueOf(sec1 - sec)
-                };
-                String[] solution = {
-                        String.valueOf(sol.getPath().length()),
-                        sol.getPath()
-                };
-                try {
-                    saveStatsToFile(statsFile, stats);
-                    saveSolutionToFile(solutionFile, solution);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                sol.setLso(0);
-                sol.setLsp(0);
-            }
-            else {
-                System.out.println("Blad!! DFS nie znalazl zadnych rozwiazan.");
-                try {
-                    saveSolutionToFile(solutionFile, new String[]{"-1"});
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        else if (Objects.equals(strategy, "dfs") && sol.dfs(root, oper)) {
+            sec1 = System.currentTimeMillis();
+            double x = (sec1 - sec) / 1000;
+            String[] stats = { //jeszcze jakies stany
+                    String.valueOf(sol.getPath().length()),
+                    String.valueOf(sol.getLSO()),
+                    String.valueOf(sol.getLSP()),
+                    String.format("%.3f", x)
+            };
+            String[] solution = {
+                    String.valueOf(sol.getPath().length()),
+                    sol.getPath()
+            };
+            try {
+                saveStatsToFile(statsFile, stats);
+                saveSolutionToFile(solutionFile, solution);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-        sc.close();
+        else {
+            System.out.println("Blad!! Algorytm " + strategy.toUpperCase() + " nie znalazl zadnych rozwiazan.");
+            try {
+                saveSolutionToFile(solutionFile, new String[]{"-1"});
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        sol.setLSO(0);
+        sol.setLSP(0);
     }
 
     private static void saveSolutionToFile(String fileName, String[] data) throws IOException {
