@@ -39,7 +39,7 @@ public class Main {
                 sec1 = System.currentTimeMillis();
                 String[] stats = { //jeszcze jakies stany
                         String.valueOf(sol.getPath().length()),
-                        String.valueOf(sol.getIterations()),
+                        String.valueOf(sol.getLso()),
                         String.valueOf(sec1 - sec)
                 };
                 String[] solution = {
@@ -52,7 +52,8 @@ public class Main {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                sol.setIterations(0);
+                sol.setLso(0);
+                sol.setLsp(0);
             }
             else {
                 System.out.println("Blad!! BFS nie znalazl zadnych rozwiazan.");
@@ -68,7 +69,7 @@ public class Main {
                 sec1 = System.currentTimeMillis();
                 String[] stats = { //jeszcze jakies stany
                         String.valueOf(sol.getPath().length()),
-                        String.valueOf(sol.getIterations()),
+                        String.valueOf(sol.getLso()),
                         String.valueOf(sec1 - sec)
                 };
                 String[] solution = {
@@ -81,7 +82,8 @@ public class Main {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                sol.setIterations(0);
+                sol.setLso(0);
+                sol.setLsp(0);
             }
             else {
                 System.out.println("Blad!! DFS nie znalazl zadnych rozwiazan.");
