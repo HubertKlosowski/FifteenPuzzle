@@ -1,11 +1,8 @@
 package fifteen.puzzle;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -17,9 +14,9 @@ public class Solution {
     private Queue<GraphNode> queue = new LinkedList<>();
     private Set<GraphNode> set = new HashSet<>();
     private Stack<GraphNode> stack = new Stack<>();
-    private PriorityQueue<GraphNode> priorityQueue = new PriorityQueue<>();
     private long LSO = 0; //liczba stanow odwiedzonych
     private long LSP = 0; //liczba stanow przetworzonych
+    private int maxRecur = 0; //maksymalna glebokosc rekursji
 
     public Solution(GraphNode root) {
         this.root = root; //pierwszy element
@@ -27,48 +24,54 @@ public class Solution {
     }
 
     public boolean dfs(GraphNode node, String operations) {
-        if (Arrays.deepEquals(node.getBoard(), getGoal().getBoard()))
+        if (node == null || operations == null || operations.length() != 4)
+            return false;
+        if (Arrays.equals(node.getBoard(), getGoal().getBoard()))
             return true;
         stack.push(node);
+        int depth = 0;
         while (!stack.isEmpty()) {
+            setMaxRecur(depth);
             LSO++;
             GraphNode v = stack.pop();
             set.add(v);
-            ArrayList<GraphNode> neigh = v.getNeighbours(operations);
-            Collections.reverse(neigh);
+            /*ArrayList<GraphNode> neigh = v.getNeighbours(operations);
             for (GraphNode el : neigh) {
-                if (Arrays.deepEquals(el.getBoard(), getGoal().getBoard())) {
+                if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
                     setPath(el);
                     return true;
                 } if (!set.contains(el) && !stack.contains(el)) {
-                    if (Arrays.deepEquals(el.getBoard(), getGoal().getBoard())) {
-                        return true;
-                    }
                     stack.push(el);
                 }
-            }
+            }*/
         }
         set.clear();
         return false;
     }
 
     public boolean bfs(GraphNode node, String operations) {
-        if (Arrays.deepEquals(node.getBoard(), getGoal().getBoard())) //jesli element grafu jest juz stanem docelowym
+        if (node == null || operations == null || operations.length() != 4)
+            return false;
+        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) //jesli element grafu jest juz stanem docelowym
             return true;
         queue.add(node); //dodanie do kolejki
         set.add(node); //dodanie do stosu
-        int depth = 0;
         while (!queue.isEmpty()) { //dopoki kolejka nie bedzie pusta
             LSO++;
             GraphNode v = queue.poll(); //bierzemy pierwszy element z kolejki
-            for (GraphNode el : v.getNeighbours(operations)) { //sprawdzamy sasiadow
-                if (Arrays.deepEquals(el.getBoard(), getGoal().getBoard())) { //czy boardy sie zgadzaja
-                    setPath(el);
-                    return true;
-                } if (!set.contains(el)) { //zwraca pozycje w stosie, a gdy -1 to nie ma
-                    depth++;
-                    queue.add(el); //usuwamy z kolejki
-                    set.add(el); //dodajemy do stosu
+            for (int i = 0; i < 4; i++) { //sprawdzamy sasiadow
+                try {
+                    GraphNode el = v.createChild(operations.charAt(i));
+                    if (Arrays.equals(el.getBoard(), getGoal().getBoard())) { //czy boardy sie zgadzaja
+                        setPath(el);
+                        return true;
+                    } if (!set.contains(el)) { //zwraca pozycje w stosie, a gdy -1 to nie ma
+                        queue.add(el); //usuwamy z kolejki
+                        set.add(el); //dodajemy do stosu
+                    }
+                }
+                catch (NullPointerException ignored) {
+
                 }
             }
         }
@@ -91,15 +94,13 @@ public class Solution {
 
     private void setGoal() { //ustawia docelowy uklad (tylko boarda)
         goal = new GraphNode(root.getRow(), root.getCol());
-        byte[][] board = new byte[goal.getRow()][goal.getCol()];
-        byte iter = 1;
-        for (byte i = 0; i < goal.getRow(); i++) {
-            for (byte j = 0; j < goal.getCol(); j++) {
-                board[i][j] = iter++;
-            }
+        byte n = (byte) (root.getCol() * goal.getRow());
+        byte[] res = new byte[n];
+        for (byte i = 0; i < n; i++) {
+            res[i] = (byte) (i + 1);
         }
-        board[goal.getRow() - 1][goal.getCol() - 1] = 0;
-        goal.setBoard(board);
+        res[n - 1] = 0;
+        goal.setBoard(res);
     }
 
     public GraphNode getGoal() {
@@ -120,5 +121,15 @@ public class Solution {
 
     public void setLSP(long LSP) {
         this.LSP = LSP;
+    }
+
+    public int getMaxRecur() {
+        return maxRecur;
+    }
+
+    public void setMaxRecur(int depth) {
+        if (this.maxRecur < depth) {
+            this.maxRecur = depth;
+        }
     }
 }
