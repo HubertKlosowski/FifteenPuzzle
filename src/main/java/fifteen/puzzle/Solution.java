@@ -11,9 +11,6 @@ public class Solution {
     private final GraphNode root;
     private GraphNode goal;
     private StringBuilder path = new StringBuilder();
-    private Queue<GraphNode> queue = new LinkedList<>();
-    private Set<GraphNode> set = new HashSet<>();
-    private Stack<GraphNode> stack = new Stack<>();
     private long LSO = 0; //liczba stanow odwiedzonych
     private long LSP = 0; //liczba stanow przetworzonych
     private int maxRecur = 0; //maksymalna glebokosc rekursji
@@ -28,6 +25,8 @@ public class Solution {
             return false;
         if (Arrays.equals(node.getBoard(), getGoal().getBoard()))
             return true;
+        Set<GraphNode> set = new HashSet<>();
+        Stack<GraphNode> stack = new Stack<>();
         stack.push(node);
         int depth = 0;
         while (!stack.isEmpty()) {
@@ -49,11 +48,13 @@ public class Solution {
         return false;
     }
 
-    public boolean bfs(GraphNode node, String operations) {
+    public boolean bfs(GraphNode node, String operations, int maxDepth) {
         if (node == null || operations == null || operations.length() != 4)
             return false;
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) //jesli element grafu jest juz stanem docelowym
             return true;
+        Queue<GraphNode> queue = new LinkedList<>();
+        Set<GraphNode> set = new HashSet<>();
         queue.add(node); //dodanie do kolejki
         set.add(node); //dodanie do stosu
         while (!queue.isEmpty()) { //dopoki kolejka nie bedzie pusta
@@ -75,7 +76,6 @@ public class Solution {
                 }
             }
         }
-        set.clear();
         return false;
     }
 

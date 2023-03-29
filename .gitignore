@@ -23,6 +23,7 @@
 hs_err_pid*
 
 .idea
-sol.txt
-stats.txt
 target
+out
+META-INF
+*.txt

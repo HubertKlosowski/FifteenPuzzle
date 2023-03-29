@@ -3,7 +3,6 @@ package fifteen.puzzle;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class GraphNode implements Serializable {
     private final byte row;

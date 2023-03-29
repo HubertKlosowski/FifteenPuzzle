@@ -35,7 +35,7 @@ public class Main {
         root.setBoard(board);
         Solution sol = new Solution(root);
         double sec = System.currentTimeMillis(), sec1;
-        if (Objects.equals(strategy, "bfs") && sol.bfs(root, oper)) {
+        if (Objects.equals(strategy, "bfs") && sol.bfs(root, oper, 3)) {
             sec1 = System.currentTimeMillis();
             double x = (sec1 - sec) / 1000;
             String[] stats = new String[]{ //jeszcze jakies stany
