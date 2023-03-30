@@ -13,14 +13,13 @@ public class Solution {
     private StringBuilder path = new StringBuilder();
     private long LSO = 0; //liczba stanow odwiedzonych
     private long LSP = 0; //liczba stanow przetworzonych
-    private int maxRecur = 0; //maksymalna glebokosc rekursji
 
     public Solution(GraphNode root) {
         this.root = root; //pierwszy element
         setGoal(); //ustawiamy docelowy uklad
     }
 
-    public boolean dfs(GraphNode node, String operations) {
+    public boolean dfs(GraphNode node, String operations, int maxDepth) {
         if (node == null || operations == null || operations.length() != 4)
             return false;
         if (Arrays.equals(node.getBoard(), getGoal().getBoard()))
@@ -28,27 +27,29 @@ public class Solution {
         Set<GraphNode> set = new HashSet<>();
         Stack<GraphNode> stack = new Stack<>();
         stack.push(node);
-        int depth = 0;
         while (!stack.isEmpty()) {
-            setMaxRecur(depth);
             LSO++;
             GraphNode v = stack.pop();
             set.add(v);
-            /*ArrayList<GraphNode> neigh = v.getNeighbours(operations);
-            for (GraphNode el : neigh) {
-                if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
-                    setPath(el);
-                    return true;
-                } if (!set.contains(el) && !stack.contains(el)) {
-                    stack.push(el);
+            for (int i = 0; i < 4; i++) {
+                try {
+                    GraphNode el = v.createChild(Character.valueOf(operations.charAt(i)));
+                    if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
+                        setPath(el);
+                        return true;
+                    } if (!set.contains(el) && !stack.contains(el)) {
+                        stack.push(el);
+                    }
                 }
-            }*/
+                catch (NullPointerException ignored) {
+
+                }
+            }
         }
-        set.clear();
         return false;
     }
 
-    public boolean bfs(GraphNode node, String operations, int maxDepth) {
+    public boolean bfs(GraphNode node, String operations) {
         if (node == null || operations == null || operations.length() != 4)
             return false;
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) //jesli element grafu jest juz stanem docelowym
@@ -62,7 +63,7 @@ public class Solution {
             GraphNode v = queue.poll(); //bierzemy pierwszy element z kolejki
             for (int i = 0; i < 4; i++) { //sprawdzamy sasiadow
                 try {
-                    GraphNode el = v.createChild(operations.charAt(i));
+                    GraphNode el = v.createChild(Character.valueOf(operations.charAt(i)));
                     if (Arrays.equals(el.getBoard(), getGoal().getBoard())) { //czy boardy sie zgadzaja
                         setPath(el);
                         return true;
@@ -121,15 +122,5 @@ public class Solution {
 
     public void setLSP(long LSP) {
         this.LSP = LSP;
-    }
-
-    public int getMaxRecur() {
-        return maxRecur;
-    }
-
-    public void setMaxRecur(int depth) {
-        if (this.maxRecur < depth) {
-            this.maxRecur = depth;
-        }
     }
 }

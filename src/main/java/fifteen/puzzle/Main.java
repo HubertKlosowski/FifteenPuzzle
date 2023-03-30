@@ -15,7 +15,10 @@ public class Main {
     private static byte col = 4;
     public static void main(String[] args) {
         String strategy = args[0];
-        String oper = args[1];
+        //komentuj jak sprawdzasz solution i zulu na gore w Path
+        //odkomentuj jak generujesz sol i stats i builduj .jar zulu pod %JAVA_HOME%
+        //nie usuwaj META-INF, bo wystarczy ze zbuildujesz .jar
+        /*String oper = args[1];
         String fileName = args[2];
         String solutionFile = args[3];
         String statsFile = args[4];
@@ -35,7 +38,7 @@ public class Main {
         root.setBoard(board);
         Solution sol = new Solution(root);
         double sec = System.currentTimeMillis(), sec1;
-        if (Objects.equals(strategy, "bfs") && sol.bfs(root, oper, 3)) {
+        if (Objects.equals(strategy, "bfs") && sol.bfs(root, oper)) {
             sec1 = System.currentTimeMillis();
             double x = (sec1 - sec) / 1000;
             String[] stats = new String[]{ //jeszcze jakies stany
@@ -56,14 +59,14 @@ public class Main {
                 throw new RuntimeException(e);
             }
         }
-        else if (Objects.equals(strategy, "dfs") && sol.dfs(root, oper)) {
+        else if (Objects.equals(strategy, "dfs") && sol.dfs(root, oper, 3)) {
             sec1 = System.currentTimeMillis();
             double x = (sec1 - sec) / 1000;
             String[] stats = new String[]{ //jeszcze jakies stany
                     String.valueOf(sol.getPath().length()),
                     String.valueOf(sol.getLSO()),
                     String.valueOf(sol.getLSP()),
-                    String.valueOf(sol.getMaxRecur()),
+                    "nie ma",
                     String.format("%.3f", x)
             };
             String[] solution = {
@@ -86,7 +89,7 @@ public class Main {
             }
         }
         sol.setLSO(0);
-        sol.setLSP(0);
+        sol.setLSP(0);*/
     }
 
     private static void saveToFile(String fileName, String[] data) throws IOException {
