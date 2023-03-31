@@ -3,6 +3,7 @@ package fifteen.puzzle;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class GraphNode implements Serializable {
     private final byte row;
@@ -65,17 +66,14 @@ public class GraphNode implements Serializable {
         return child;
     }
 
-    /*public ArrayList<GraphNode> getNeighbours(String operations) { //zbior sasiadow
+    /*public ArrayList<GraphNode> getChildren(String operations) { //zbior mozliwych dzieci
         ArrayList<GraphNode> neigh = new ArrayList<>();
-        if (this.getParent() != null) {
-            neigh.add(this.getParent()); //rodzic to tez sasiad
-        }
         for (int i = 0; i < 4; i++) {
-            if (createChild(this, operations.charAt(i)) != null) { //jesli sasiad nie jest nullem
-                GraphNode child = createChild(this, operations.charAt(i));
+            try {
+                GraphNode child = createChild(operations.charAt(i));
                 child.setParent(this);
                 neigh.add(child);
-            }
+            } catch (NullPointerException ignored) {}
         }
         return neigh;
     }*/

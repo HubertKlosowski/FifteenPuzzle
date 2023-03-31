@@ -1,16 +1,14 @@
 package fifteen.puzzle;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class Solution {
     private final GraphNode root;
     private GraphNode goal;
     private StringBuilder path = new StringBuilder();
+    private Set<GraphNode> set = new HashSet<>();
+    private Stack<GraphNode> stack = new Stack<>();
+    private int maxRecurDepth = 0;
     private long LSO = 0; //liczba stanow odwiedzonych
     private long LSP = 0; //liczba stanow przetworzonych
 
@@ -19,13 +17,49 @@ public class Solution {
         setGoal(); //ustawiamy docelowy uklad
     }
 
-    public boolean dfs(GraphNode node, String operations, int maxDepth) {
+    public boolean dfs(GraphNode node, String operations, int maxDepth) { //kolejnosc sprawdzania, czy sortowac, bo jest inna kolejnosc w kolejnych poziomach
+        if (maxDepth == -1)
+            return false;
         if (node == null || operations == null || operations.length() != 4)
             return false;
-        if (Arrays.equals(node.getBoard(), getGoal().getBoard()))
+        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
+            setMaxRecurDepth(20 - maxDepth);
+            setPath(node);
+            setLSP(set.size());
             return true;
-        Set<GraphNode> set = new HashSet<>();
-        Stack<GraphNode> stack = new Stack<>();
+        }
+        //Stack<GraphNode> stack = new Stack<>();
+        stack.push(node);
+        LSO++;
+        GraphNode v = stack.pop();
+        set.add(v);
+        for (int i = 0; i < 4; i++) {
+            try {
+                GraphNode el = v.createChild(operations.charAt(i));
+                if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
+                    setMaxRecurDepth(20 - maxDepth);
+                    setPath(el);
+                    setLSP(set.size());
+                    return true;
+                } if (!set.contains(el) && !stack.contains(el)) {
+                    stack.push(el);
+                    if (dfs(el, operations, maxDepth - 1)) {
+                        return true;
+                    }
+                }
+            } catch (NullPointerException ignored) {}
+        }
+        return false;
+    }
+
+    /*public boolean dfs(GraphNode node, String operations, int maxDepth) { //kolejnosc sprawdzania, czy sortowac, bo jest inna kolejnosc w kolejnych poziomach
+        if (node == null || operations == null || operations.length() != 4)
+            return false;
+        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
+            setMaxRecurDepth(0);
+            return true;
+        }
+        //Stack<GraphNode> stack = new Stack<>();
         stack.push(node);
         while (!stack.isEmpty()) {
             LSO++;
@@ -33,21 +67,19 @@ public class Solution {
             set.add(v);
             for (int i = 0; i < 4; i++) {
                 try {
-                    GraphNode el = v.createChild(Character.valueOf(operations.charAt(i)));
+                    GraphNode el = v.createChild(operations.charAt(i));
                     if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
                         setPath(el);
+                        setLSP(set.size());
                         return true;
                     } if (!set.contains(el) && !stack.contains(el)) {
                         stack.push(el);
                     }
-                }
-                catch (NullPointerException ignored) {
-
-                }
+                } catch (NullPointerException ignored) {}
             }
         }
         return false;
-    }
+    }*/
 
     public boolean bfs(GraphNode node, String operations) {
         if (node == null || operations == null || operations.length() != 4)
@@ -55,7 +87,6 @@ public class Solution {
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) //jesli element grafu jest juz stanem docelowym
             return true;
         Queue<GraphNode> queue = new LinkedList<>();
-        Set<GraphNode> set = new HashSet<>();
         queue.add(node); //dodanie do kolejki
         set.add(node); //dodanie do stosu
         while (!queue.isEmpty()) { //dopoki kolejka nie bedzie pusta
@@ -63,9 +94,10 @@ public class Solution {
             GraphNode v = queue.poll(); //bierzemy pierwszy element z kolejki
             for (int i = 0; i < 4; i++) { //sprawdzamy sasiadow
                 try {
-                    GraphNode el = v.createChild(Character.valueOf(operations.charAt(i)));
+                    GraphNode el = v.createChild(operations.charAt(i));
                     if (Arrays.equals(el.getBoard(), getGoal().getBoard())) { //czy boardy sie zgadzaja
                         setPath(el);
+                        setLSP(set.size());
                         return true;
                     } if (!set.contains(el)) { //zwraca pozycje w stosie, a gdy -1 to nie ma
                         queue.add(el); //usuwamy z kolejki
@@ -112,15 +144,19 @@ public class Solution {
         return LSO;
     }
 
-    public void setLSO(long LSO) {
-        this.LSO = LSO;
-    }
-
     public long getLSP() {
         return LSP;
     }
 
     public void setLSP(long LSP) {
         this.LSP = LSP;
+    }
+
+    public int getMaxRecurDepth() {
+        return maxRecurDepth;
+    }
+
+    public void setMaxRecurDepth(int maxRecurDepth) {
+        this.maxRecurDepth = maxRecurDepth;
     }
 }

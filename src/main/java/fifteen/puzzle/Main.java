@@ -18,7 +18,8 @@ public class Main {
         //komentuj jak sprawdzasz solution i zulu na gore w Path
         //odkomentuj jak generujesz sol i stats i builduj .jar zulu pod %JAVA_HOME%
         //nie usuwaj META-INF, bo wystarczy ze zbuildujesz .jar
-        /*String oper = args[1];
+
+        String oper = args[1];
         String fileName = args[2];
         String solutionFile = args[3];
         String statsFile = args[4];
@@ -37,15 +38,14 @@ public class Main {
         GraphNode root = new GraphNode(row, col);
         root.setBoard(board);
         Solution sol = new Solution(root);
-        double sec = System.currentTimeMillis(), sec1;
+        double sec = System.nanoTime();
         if (Objects.equals(strategy, "bfs") && sol.bfs(root, oper)) {
-            sec1 = System.currentTimeMillis();
-            double x = (sec1 - sec) / 1000;
-            String[] stats = new String[]{ //jeszcze jakies stany
+            double x = (System.nanoTime() - sec) / 1000;
+            String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
                     String.valueOf(sol.getLSO()),
                     String.valueOf(sol.getLSP()),
-                    "0",
+                    String.valueOf(Integer.valueOf(fileName.substring(4,6))),
                     String.format("%.3f", x)
             };
             String[] solution = {
@@ -56,17 +56,16 @@ public class Main {
                 saveToFile(statsFile, stats);
                 saveToFile(solutionFile, solution);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
         }
-        else if (Objects.equals(strategy, "dfs") && sol.dfs(root, oper, 3)) {
-            sec1 = System.currentTimeMillis();
-            double x = (sec1 - sec) / 1000;
-            String[] stats = new String[]{ //jeszcze jakies stany
+        else if (Objects.equals(strategy, "dfs") && sol.dfs(root, oper, 20)) {
+            double x = (System.nanoTime() - sec) / 1000;
+            String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
                     String.valueOf(sol.getLSO()),
                     String.valueOf(sol.getLSP()),
-                    "nie ma",
+                    String.valueOf(20 - sol.getMaxRecurDepth()),
                     String.format("%.3f", x)
             };
             String[] solution = {
@@ -77,7 +76,7 @@ public class Main {
                 saveToFile(statsFile, stats);
                 saveToFile(solutionFile, solution);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
         }
         else {
@@ -85,11 +84,9 @@ public class Main {
             try {
                 saveToFile(solutionFile, new String[]{"-1"});
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             }
         }
-        sol.setLSO(0);
-        sol.setLSP(0);*/
     }
 
     private static void saveToFile(String fileName, String[] data) throws IOException {
