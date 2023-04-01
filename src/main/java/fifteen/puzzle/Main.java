@@ -24,6 +24,7 @@ public class Main {
             odkomentuj jak generujesz sol i stats i builduj .jar zulu pod %JAVA_HOME%
             nie usuwaj META-INF, bo wystarczy ze zbuildujesz .jar
         */
+
         byte[] board;
         try {
             board = loadFromFile(args[2]);
@@ -109,6 +110,8 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         }
+
+
     }
 
     private static void saveToFile(String fileName, String[] data) throws IOException {

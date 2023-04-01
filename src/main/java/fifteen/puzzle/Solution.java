@@ -22,6 +22,8 @@ public class Solution {
             return false;
         }
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
+            setLSO(1);
+            setLSP(0);
             return true;
         }
         Comparator<GraphNode> comparator; //odpowiada za umieszczanie na kolejce zgodnie z dwoma kryteriami
@@ -34,13 +36,13 @@ public class Solution {
         priorityQueue.add(node);
         String oper = "LRUD";
         while (!priorityQueue.isEmpty()) {
-            LSO++;
             GraphNode v = priorityQueue.poll();
             if (Arrays.equals(v.getBoard(), getGoal().getBoard())) {
                 setPath(v);
                 setLSP(set.size());
                 return true;
-            } else if (!set.contains(v)) {
+            }
+            if (!set.contains(v)) {
                 set.add(v);
             }
             for (int i = 0; i < 4; i++) {
@@ -49,8 +51,10 @@ public class Solution {
                     if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
                         setPath(el);
                         setLSP(set.size());
+                        setLSO(getLSP() + priorityQueue.size());
                         return true;
-                    } else if (!set.contains(el)) {
+                    }
+                    if (!set.contains(el)) {
                         priorityQueue.add(el);
                     }
                 } catch (NullPointerException ignored) {}
@@ -69,11 +73,11 @@ public class Solution {
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
             setPath(node);
             setLSP(set.size());
+            setLSO(getLSP() + stack.size());
             return true;
         }
         //Stack<GraphNode> stack = new Stack<>();
         stack.push(node); //po co stos w rekurencji?
-        LSO++;
         GraphNode v = stack.pop();
         set.add(v);
         for (int i = 0; i < 4; i++) {
@@ -82,6 +86,7 @@ public class Solution {
                 if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
                     setPath(el);
                     setLSP(set.size());
+                    setLSO(getLSP() + stack.size());
                     return true;
                 } if (!set.contains(el) && !stack.contains(el)) {
                     stack.push(el);
@@ -100,14 +105,13 @@ public class Solution {
         }
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) { //jesli element grafu jest juz stanem docelowym
             setLSO(1);
-            setLSP(1);
+            setLSP(0);
             return true;
         }
         Queue<GraphNode> queue = new LinkedList<>();
         queue.add(node); //dodanie do kolejki
         set.add(node); //dodanie do stosu
         while (!queue.isEmpty()) { //dopoki kolejka nie bedzie pusta
-            LSO++;
             GraphNode v = queue.poll(); //bierzemy pierwszy element z kolejki
             for (int i = 0; i < 4; i++) { //sprawdzamy sasiadow
                 try {
@@ -115,6 +119,7 @@ public class Solution {
                     if (Arrays.equals(el.getBoard(), getGoal().getBoard())) { //czy boardy sie zgadzaja
                         setPath(el);
                         setLSP(set.size());
+                        setLSO(getLSP() + queue.size());
                         return true;
                     }
                     if (!set.contains(el)) { //zwraca pozycje w stosie, a gdy -1 to nie ma
