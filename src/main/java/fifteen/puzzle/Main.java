@@ -78,7 +78,7 @@ public class Main {
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        } else if (Objects.equals(args[0], "astr") && sol.astar(root, args[1])) {
+        } else if (Objects.equals(args[0], "astr") && sol.astr(root, args[1])) {
             double x = (System.nanoTime() - sec) / 1000;
             String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),

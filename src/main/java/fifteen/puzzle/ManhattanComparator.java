@@ -9,9 +9,9 @@ public class ManhattanComparator implements Comparator<GraphNode> {
 
     @Override
     public int compare(GraphNode o1, GraphNode o2) {
-        int m1 = ManhattanMetric(o1);
-        int m2 = ManhattanMetric(o2);
-        return m1 - m2;
+        int m1 = o1.getPathCost() + ManhattanMetric(o1);
+        int m2 = o2.getPathCost() + ManhattanMetric(o2);
+        return Integer.compare(m1, m2);
     }
 
     private int ManhattanMetric(GraphNode node) { //dystans miedzy wspolrzednymi stanu doc. od aktualnie sprawdzanego

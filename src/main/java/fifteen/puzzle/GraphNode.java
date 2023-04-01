@@ -88,29 +88,13 @@ public class GraphNode implements Serializable {
         this.parent = parent;
     }
 
-    private int Metric(String choice) { //iloma elementami rozni sie stan docelowy od aktualnie sprawdzanego
-        int res = 0;
-        byte[] board = this.getBoard();
-        if (Objects.equals(choice, "hamm")) {
-            for (int i = 0; i < board.length; i++) {
-                if (board[i] != i + 1) {
-                    res++;
-                }
-            }
-        } else if (Objects.equals(choice, "manh")) {
-            int row = this.getRow();
-            int col = this.getCol();
-            for (int i = 0; i < board.length; i++) {
-                if (board[i] != i + 1 && board[i] != 0) {
-                    res += Math.abs((i / row) - (i % col));
-                    if (board[i] == 0 && i != board.length - 1) {
-                        res += Math.abs(((board[i] - 1) / row) - ((board[i] - 1) % col));
-                    } else {
-                        res += Math.abs(((board.length - 2) / row) - ((board.length - 2) % col));
-                    }
-                }
-            }
+    public int getPathCost() {
+        GraphNode node = SerializationUtils.clone(this);
+        int pathCost = 0;
+        while (node.getParent() != null) {
+            pathCost++;
+            node = node.getParent();
         }
-        return res;
+        return pathCost;
     }
 }

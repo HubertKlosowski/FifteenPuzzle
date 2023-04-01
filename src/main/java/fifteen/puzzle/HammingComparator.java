@@ -9,9 +9,9 @@ public class HammingComparator implements Comparator<GraphNode> {
 
     @Override
     public int compare(GraphNode o1, GraphNode o2) {
-        int h1 = HammingMetric(o1);
-        int h2 = HammingMetric(o2);
-        return h1 - h2;
+        int h1 = o1.getPathCost() + HammingMetric(o1);
+        int h2 = o2.getPathCost() + HammingMetric(o2);
+        return Integer.compare(h1, h2);
     }
 
     private int HammingMetric(GraphNode node) { //iloma elementami rozni sie stan docelowy od aktualnie sprawdzanego

@@ -17,8 +17,8 @@ public class Solution {
         setGoal(); //ustawiamy docelowy uklad
     }
 
-    public boolean astar(GraphNode node, String heuristic) { //nie dziala
-        if (!Objects.equals(heuristic, "manh") || !Objects.equals(heuristic, "hamm") || node == null) {
+    public boolean astr(GraphNode node, String heuristic) { //nie dziala
+        if (!(Objects.equals(heuristic, "manh") || Objects.equals(heuristic, "hamm")) || node == null) {
             return false;
         }
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
@@ -99,7 +99,7 @@ public class Solution {
             return false;
         }
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) { //jesli element grafu jest juz stanem docelowym
-            setLSO(0);
+            setLSO(1);
             setLSP(1);
             return true;
         }
