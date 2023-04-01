@@ -3,7 +3,7 @@ package fifteen.puzzle;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Objects;
 
 public class GraphNode implements Serializable {
     private final byte row;
@@ -33,19 +33,13 @@ public class GraphNode implements Serializable {
         return new int[]{-1, -1};
     }
 
-    public static GraphNode goBack(GraphNode node, int depth) {
-        GraphNode copy = SerializationUtils.clone(node);
-        while (depth != 0) {
-            copy = copy.getParent();
-            depth--;
-        }
-        return copy;
-    }
-
-    public GraphNode createChild(Character operation) { //tworzy dziecko xd
+    public GraphNode createChild(Character operation) {
         GraphNode child = new GraphNode(this.getRow(), this.getCol(), operation);
         byte[] kid_board = SerializationUtils.clone(this.getBoard());
         int[] whereZero = getPosition(kid_board); //pozycja zera
+        if (whereZero[0] == -1) {
+            throw new NullPointerException();
+        }
         if (operation == 'L' && whereZero[1] != 0) {
             kid_board[(whereZero[0] * getRow()) + whereZero[1]] = kid_board[(whereZero[0] * getRow()) + whereZero[1] - 1];
             kid_board[(whereZero[0] * getRow()) + whereZero[1] - 1] = 0;
@@ -66,18 +60,6 @@ public class GraphNode implements Serializable {
         return child;
     }
 
-    /*public ArrayList<GraphNode> getChildren(String operations) { //zbior mozliwych dzieci
-        ArrayList<GraphNode> neigh = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            try {
-                GraphNode child = createChild(operations.charAt(i));
-                child.setParent(this);
-                neigh.add(child);
-            } catch (NullPointerException ignored) {}
-        }
-        return neigh;
-    }*/
-
     public byte getRow() {
         return row;
     }
@@ -88,10 +70,6 @@ public class GraphNode implements Serializable {
 
     public Character getOperation() {
         return operation;
-    }
-
-    public void setOperation(Character operation) {
-        this.operation = operation;
     }
 
     public byte[] getBoard() {
@@ -108,5 +86,31 @@ public class GraphNode implements Serializable {
 
     public void setParent(GraphNode parent) {
         this.parent = parent;
+    }
+
+    private int Metric(String choice) { //iloma elementami rozni sie stan docelowy od aktualnie sprawdzanego
+        int res = 0;
+        byte[] board = this.getBoard();
+        if (Objects.equals(choice, "hamm")) {
+            for (int i = 0; i < board.length; i++) {
+                if (board[i] != i + 1) {
+                    res++;
+                }
+            }
+        } else if (Objects.equals(choice, "manh")) {
+            int row = this.getRow();
+            int col = this.getCol();
+            for (int i = 0; i < board.length; i++) {
+                if (board[i] != i + 1 && board[i] != 0) {
+                    res += Math.abs((i / row) - (i % col));
+                    if (board[i] == 0 && i != board.length - 1) {
+                        res += Math.abs(((board[i] - 1) / row) - ((board[i] - 1) % col));
+                    } else {
+                        res += Math.abs(((board.length - 2) / row) - ((board.length - 2) % col));
+                    }
+                }
+            }
+        }
+        return res;
     }
 }

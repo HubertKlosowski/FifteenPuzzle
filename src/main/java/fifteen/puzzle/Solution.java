@@ -17,19 +17,62 @@ public class Solution {
         setGoal(); //ustawiamy docelowy uklad
     }
 
-    public boolean dfs(GraphNode node, String operations, int maxDepth) { //kolejnosc sprawdzania, czy sortowac, bo jest inna kolejnosc w kolejnych poziomach
-        if (maxDepth == -1)
+    public boolean astar(GraphNode node, String heuristic) { //nie dziala
+        if (!Objects.equals(heuristic, "manh") || !Objects.equals(heuristic, "hamm") || node == null) {
             return false;
-        if (node == null || operations == null || operations.length() != 4)
-            return false;
+        }
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
-            setMaxRecurDepth(20 - maxDepth);
+            return true;
+        }
+        Comparator<GraphNode> comparator; //odpowiada za umieszczanie na kolejce zgodnie z dwoma kryteriami
+        if (Objects.equals(heuristic, "manh")) {
+            comparator = new ManhattanComparator();
+        } else {
+            comparator = new HammingComparator();
+        }
+        PriorityQueue<GraphNode> priorityQueue = new PriorityQueue<>(comparator);
+        priorityQueue.add(node);
+        String oper = "LRUD";
+        while (!priorityQueue.isEmpty()) {
+            LSO++;
+            GraphNode v = priorityQueue.poll();
+            if (Arrays.equals(v.getBoard(), getGoal().getBoard())) {
+                setPath(v);
+                setLSP(set.size());
+                return true;
+            } else if (!set.contains(v)) {
+                set.add(v);
+            }
+            for (int i = 0; i < 4; i++) {
+                try {
+                    GraphNode el = v.createChild(oper.charAt(i));
+                    if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
+                        setPath(el);
+                        setLSP(set.size());
+                        return true;
+                    } else if (!set.contains(el)) {
+                        priorityQueue.add(el);
+                    }
+                } catch (NullPointerException ignored) {}
+            }
+        }
+        return false;
+    }
+
+    public boolean dfs(GraphNode node, String operations, int maxDepth) { //na iteracje zamien
+        if (maxDepth == -1) {
+            return false;
+        }
+        if (node == null || operations == null || operations.length() != 4) {
+            return false;
+        }
+        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
             setPath(node);
             setLSP(set.size());
             return true;
         }
         //Stack<GraphNode> stack = new Stack<>();
-        stack.push(node);
+        stack.push(node); //po co stos w rekurencji?
         LSO++;
         GraphNode v = stack.pop();
         set.add(v);
@@ -37,7 +80,6 @@ public class Solution {
             try {
                 GraphNode el = v.createChild(operations.charAt(i));
                 if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
-                    setMaxRecurDepth(20 - maxDepth);
                     setPath(el);
                     setLSP(set.size());
                     return true;
@@ -52,40 +94,15 @@ public class Solution {
         return false;
     }
 
-    /*public boolean dfs(GraphNode node, String operations, int maxDepth) { //kolejnosc sprawdzania, czy sortowac, bo jest inna kolejnosc w kolejnych poziomach
-        if (node == null || operations == null || operations.length() != 4)
-            return false;
-        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
-            setMaxRecurDepth(0);
-            return true;
-        }
-        //Stack<GraphNode> stack = new Stack<>();
-        stack.push(node);
-        while (!stack.isEmpty()) {
-            LSO++;
-            GraphNode v = stack.pop();
-            set.add(v);
-            for (int i = 0; i < 4; i++) {
-                try {
-                    GraphNode el = v.createChild(operations.charAt(i));
-                    if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
-                        setPath(el);
-                        setLSP(set.size());
-                        return true;
-                    } if (!set.contains(el) && !stack.contains(el)) {
-                        stack.push(el);
-                    }
-                } catch (NullPointerException ignored) {}
-            }
-        }
-        return false;
-    }*/
-
     public boolean bfs(GraphNode node, String operations) {
-        if (node == null || operations == null || operations.length() != 4)
+        if (node == null || operations == null || operations.length() != 4) {
             return false;
-        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) //jesli element grafu jest juz stanem docelowym
+        }
+        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) { //jesli element grafu jest juz stanem docelowym
+            setLSO(0);
+            setLSP(1);
             return true;
+        }
         Queue<GraphNode> queue = new LinkedList<>();
         queue.add(node); //dodanie do kolejki
         set.add(node); //dodanie do stosu
@@ -99,14 +116,13 @@ public class Solution {
                         setPath(el);
                         setLSP(set.size());
                         return true;
-                    } if (!set.contains(el)) { //zwraca pozycje w stosie, a gdy -1 to nie ma
+                    }
+                    if (!set.contains(el)) { //zwraca pozycje w stosie, a gdy -1 to nie ma
                         queue.add(el); //usuwamy z kolejki
                         set.add(el); //dodajemy do stosu
                     }
                 }
-                catch (NullPointerException ignored) {
-
-                }
+                catch (NullPointerException ignored) {}
             }
         }
         return false;
@@ -118,10 +134,10 @@ public class Solution {
 
     public void setPath(GraphNode goal) {
         while (goal.getParent() != null) {
-            LSP++;
             path.append(goal.getOperation());
             goal = goal.getParent();
         }
+        setMaxRecurDepth(path.length());
         path.reverse();
     }
 
@@ -142,6 +158,10 @@ public class Solution {
 
     public long getLSO() {
         return LSO;
+    }
+
+    public void setLSO(long LSO) {
+        this.LSO = LSO;
     }
 
     public long getLSP() {

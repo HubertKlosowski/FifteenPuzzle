@@ -14,38 +14,39 @@ public class Main {
     private static byte row = 4;
     private static byte col = 4;
     public static void main(String[] args) {
-        String strategy = args[0];
-        //komentuj jak sprawdzasz solution i zulu na gore w Path
-        //odkomentuj jak generujesz sol i stats i builduj .jar zulu pod %JAVA_HOME%
-        //nie usuwaj META-INF, bo wystarczy ze zbuildujesz .jar
-
-        String oper = args[1];
-        String fileName = args[2];
-        String solutionFile = args[3];
-        String statsFile = args[4];
+        /*
+            strategia                           args[0]
+            kolejnosc lub kryterium heurystyki  args[1]
+            plik z ukladem poczatkowym          args[2]
+            plik z rozwiazaniem                 args[3]
+            plik z statystykami                 args[4]
+            komentuj jak sprawdzasz solution i zulu na gore w Path
+            odkomentuj jak generujesz sol i stats i builduj .jar zulu pod %JAVA_HOME%
+            nie usuwaj META-INF, bo wystarczy ze zbuildujesz .jar
+        */
         byte[] board;
         try {
-            board = loadFromFile(fileName);
+            board = loadFromFile(args[2]);
         } catch (IOException e) {
-            System.out.println("Blad!! Nie mozna odczytac danych z pliku lub plik nie istnieje.");
-            System.out.println("Wygenerowano losowa tablice 4x4.");
+            System.out.println("Błąd!! Nie można odczytać danych z pliku lub plik nie istnieje.");
+            System.out.println("Wygenerowano losową tablice 4x4.");
             board = generateBoard();
         } catch (IllegalArgumentException e) {
-            System.out.println("Blad!! Niepoprawny wymiar.");
-            System.out.println("Wygenerowano losowa tablice 4x4.");
+            System.out.println("Błąd!! Niepoprawny wymiar.");
+            System.out.println("Wygenerowano losową tablice 4x4.");
             board = generateBoard();
         }
         GraphNode root = new GraphNode(row, col);
         root.setBoard(board);
         Solution sol = new Solution(root);
         double sec = System.nanoTime();
-        if (Objects.equals(strategy, "bfs") && sol.bfs(root, oper)) {
+        if (Objects.equals(args[0], "bfs") && sol.bfs(root, args[1])) {
             double x = (System.nanoTime() - sec) / 1000;
             String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
                     String.valueOf(sol.getLSO()),
                     String.valueOf(sol.getLSP()),
-                    String.valueOf(Integer.valueOf(fileName.substring(4,6))),
+                    String.valueOf(Integer.valueOf(args[2].substring(4,6))),
                     String.format("%.3f", x)
             };
             String[] solution = {
@@ -53,19 +54,18 @@ public class Main {
                     sol.getPath()
             };
             try {
-                saveToFile(statsFile, stats);
-                saveToFile(solutionFile, solution);
+                saveToFile(args[4], stats);
+                saveToFile(args[3], solution);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        }
-        else if (Objects.equals(strategy, "dfs") && sol.dfs(root, oper, 20)) {
+        } else if (Objects.equals(args[0], "dfs") && sol.dfs(root, args[1], 20)) {
             double x = (System.nanoTime() - sec) / 1000;
             String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
                     String.valueOf(sol.getLSO()),
                     String.valueOf(sol.getLSP()),
-                    String.valueOf(20 - sol.getMaxRecurDepth()),
+                    String.valueOf(sol.getMaxRecurDepth()),
                     String.format("%.3f", x)
             };
             String[] solution = {
@@ -73,16 +73,38 @@ public class Main {
                     sol.getPath()
             };
             try {
-                saveToFile(statsFile, stats);
-                saveToFile(solutionFile, solution);
+                saveToFile(args[4], stats);
+                saveToFile(args[3], solution);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        }
-        else {
-            System.out.println("Blad!! Algorytm " + strategy.toUpperCase() + " nie znalazl zadnych rozwiazan.");
+        } else if (Objects.equals(args[0], "astr") && sol.astar(root, args[1])) {
+            double x = (System.nanoTime() - sec) / 1000;
+            String[] stats = new String[]{ //sprawdzic stany
+                    String.valueOf(sol.getPath().length()),
+                    String.valueOf(sol.getLSO()),
+                    String.valueOf(sol.getLSP()),
+                    String.valueOf(sol.getMaxRecurDepth()),
+                    String.format("%.3f", x)
+            };
+            String[] solution = {
+                    String.valueOf(sol.getPath().length()),
+                    sol.getPath()
+            };
             try {
-                saveToFile(solutionFile, new String[]{"-1"});
+                saveToFile(args[4], stats);
+                saveToFile(args[3], solution);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            if (Objects.equals(args[0], "astar")) {
+                System.out.println("Błąd!! Algorytm A* nie znalazł żadnych rozwiązań.");
+            } else {
+                System.out.println("Błąd!! Algorytm " + args[0].toUpperCase() + " nie znalazł żadnych rozwiązań.");
+            }
+            try {
+                saveToFile(args[3], new String[]{"-1"});
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
