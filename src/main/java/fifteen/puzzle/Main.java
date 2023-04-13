@@ -40,9 +40,9 @@ public class Main {
         GraphNode root = new GraphNode(row, col);
         root.setBoard(board);
         Solution sol = new Solution(root);
-        double sec = System.nanoTime();
+        double sec = System.currentTimeMillis();
         if (Objects.equals(args[0], "bfs") && sol.bfs(root, args[1])) {
-            double x = (System.nanoTime() - sec) / 1000;
+            double x = (System.currentTimeMillis() - sec) / 1000.0;
             String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
                     String.valueOf(sol.getLSO()),
@@ -61,7 +61,7 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         } else if (Objects.equals(args[0], "dfs") && sol.dfs(root, args[1], 20)) {
-            double x = (System.nanoTime() - sec) / 1000;
+            double x = (System.currentTimeMillis() - sec) / 1000.0;
             String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
                     String.valueOf(sol.getLSO()),
@@ -80,7 +80,7 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         } else if (Objects.equals(args[0], "astr") && sol.astr(root, args[1])) {
-            double x = (System.nanoTime() - sec) / 1000;
+            double x = (System.currentTimeMillis() - sec) / 1000.0;
             String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
                     String.valueOf(sol.getLSO()),
@@ -110,7 +110,6 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         }
-
 
     }
 

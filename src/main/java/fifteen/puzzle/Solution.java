@@ -6,8 +6,8 @@ public class Solution {
     private final GraphNode root;
     private GraphNode goal;
     private StringBuilder path = new StringBuilder();
-    private Set<GraphNode> set = new HashSet<>();
     private Stack<GraphNode> stack = new Stack<>();
+    private Set<GraphNode> set = new HashSet<>();
     private int maxRecurDepth = 0;
     private long LSO = 0; //liczba stanow odwiedzonych
     private long LSP = 0; //liczba stanow przetworzonych
@@ -26,6 +26,7 @@ public class Solution {
             setLSP(0);
             return true;
         }
+        Set<GraphNode> set = new HashSet<>();
         Comparator<GraphNode> comparator; //odpowiada za umieszczanie na kolejce zgodnie z dwoma kryteriami
         if (Objects.equals(heuristic, "manh")) {
             comparator = new ManhattanComparator();
@@ -63,32 +64,29 @@ public class Solution {
         return false;
     }
 
-    public boolean dfs(GraphNode node, String operations, int maxDepth) { //na iteracje zamien
-        if (maxDepth == -1) {
+    public boolean dfs(GraphNode node, String operations, int maxDepth) {
+        if (maxDepth == -1)
             return false;
-        }
-        if (node == null || operations == null || operations.length() != 4) {
-            return false;
-        }
         if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
+            setMaxRecurDepth(20 - maxDepth);
             setPath(node);
             setLSP(set.size());
             setLSO(getLSP() + stack.size());
             return true;
         }
-        //Stack<GraphNode> stack = new Stack<>();
-        stack.push(node); //po co stos w rekurencji?
+        stack.push(node);
         GraphNode v = stack.pop();
         set.add(v);
         for (int i = 0; i < 4; i++) {
             try {
                 GraphNode el = v.createChild(operations.charAt(i));
                 if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
+                    setMaxRecurDepth(20 - maxDepth);
                     setPath(el);
                     setLSP(set.size());
                     setLSO(getLSP() + stack.size());
                     return true;
-                } if (!set.contains(el) && !stack.contains(el)) {
+                } else if (!set.contains(el) && !stack.contains(el)) {
                     stack.push(el);
                     if (dfs(el, operations, maxDepth - 1)) {
                         return true;
@@ -108,6 +106,7 @@ public class Solution {
             setLSP(0);
             return true;
         }
+        Set<GraphNode> set = new HashSet<>();
         Queue<GraphNode> queue = new LinkedList<>();
         queue.add(node); //dodanie do kolejki
         set.add(node); //dodanie do stosu
