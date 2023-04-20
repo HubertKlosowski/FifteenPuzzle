@@ -67,7 +67,7 @@ public class Solution {
             return true;
         }
         if (getMaxRecurDepth() < 20 - maxDepth)
-            setMaxRecurDepth(maxDepth);
+            maxRecurDepth = 20 - maxDepth;
         LSO++;
         set.add(node);
         for (int i = 0; i < 4; i++) {
@@ -132,7 +132,8 @@ public class Solution {
             path.append(goal.getOperation());
             goal = goal.getParent();
         }
-        setMaxRecurDepth(path.length());
+        if (maxRecurDepth == 0)
+            maxRecurDepth = path.length();
         path.reverse();
     }
 
@@ -169,9 +170,5 @@ public class Solution {
 
     public int getMaxRecurDepth() {
         return maxRecurDepth;
-    }
-
-    public void setMaxRecurDepth(int maxRecurDepth) {
-        this.maxRecurDepth = maxRecurDepth;
     }
 }
