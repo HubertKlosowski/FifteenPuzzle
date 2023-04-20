@@ -22,9 +22,6 @@ public class HammingComparator implements Comparator<GraphNode> {
                 res++;
             }
         }
-        if (board[board.length - 1] != 0) {
-            res++;
-        }
         return res;
     }
 }

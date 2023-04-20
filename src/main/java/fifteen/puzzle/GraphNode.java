@@ -3,6 +3,7 @@ package fifteen.puzzle;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class GraphNode implements Serializable {
     private final byte row;
@@ -95,5 +96,18 @@ public class GraphNode implements Serializable {
             node = node.getParent();
         }
         return pathCost;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GraphNode graphNode = (GraphNode) o;
+        return Arrays.equals(board, graphNode.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(board);
     }
 }

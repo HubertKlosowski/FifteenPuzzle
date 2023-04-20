@@ -20,8 +20,8 @@ public class Main {
             plik z ukladem poczatkowym          args[2]
             plik z rozwiazaniem                 args[3]
             plik z statystykami                 args[4]
-            komentuj jak sprawdzasz solution i zulu na gore w Path
-            odkomentuj jak generujesz sol i stats i builduj .jar zulu pod %JAVA_HOME%
+            komentuj jak sprawdzasz solution
+            odkomentuj jak generujesz sol i stats i builduj .jar
             nie usuwaj META-INF, bo wystarczy ze zbuildujesz .jar
         */
 
