@@ -29,12 +29,12 @@ public class Main {
         try {
             board = loadFromFile(args[2]);
         } catch (IOException e) {
-            System.out.println("Błąd!! Nie można odczytać danych z pliku lub plik nie istnieje.");
-            System.out.println("Wygenerowano losową tablice 4x4.");
+            System.out.println("Blad!! Nie mozna odczytac danych z pliku lub plik nie istnieje.");
+            System.out.println("Wygenerowano losowa tablice 4x4.");
             board = generateBoard();
         } catch (IllegalArgumentException e) {
-            System.out.println("Błąd!! Niepoprawny wymiar.");
-            System.out.println("Wygenerowano losową tablice 4x4.");
+            System.out.println("Blad!! Niepoprawny wymiar.");
+            System.out.println("Wygenerowano losowa tablice 4x4.");
             board = generateBoard();
         }
         GraphNode root = new GraphNode(row, col);
@@ -100,9 +100,9 @@ public class Main {
             }
         } else {
             if (Objects.equals(args[0], "astar")) {
-                System.out.println("Błąd!! Algorytm A* nie znalazł żadnych rozwiązań.");
+                System.out.println("Blad!! Algorytm A* nie znalazl zadnych rozwiazan.");
             } else {
-                System.out.println("Błąd!! Algorytm " + args[0].toUpperCase() + " nie znalazł żadnych rozwiązań.");
+                System.out.println("Blad!! Algorytm " + args[0].toUpperCase() + " nie znalazl zadnych rozwiazan.");
             }
             try {
                 saveToFile(args[3], new String[]{"-1"});
@@ -149,15 +149,5 @@ public class Main {
         }
         Collections.shuffle(Arrays.asList(res));
         return res;
-    }
-
-    public static void show(byte[] board) { //pomocniczo do wyrzucenia
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                System.out.print(board[i * row + j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 }

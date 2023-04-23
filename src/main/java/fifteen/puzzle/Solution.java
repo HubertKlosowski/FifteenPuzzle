@@ -40,6 +40,7 @@ public class Solution {
             if (Arrays.equals(v.getBoard(), getGoal().getBoard())) {
                 setPath(v);
                 setLSP(set.size());
+                setLSO(priorityQueue.size() + set.size());
                 return true;
             }
             if (!set.contains(v)) {
