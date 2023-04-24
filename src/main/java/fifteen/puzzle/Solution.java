@@ -20,7 +20,7 @@ public class Solution {
         if (!(Objects.equals(heuristic, "manh") || Objects.equals(heuristic, "hamm")) || node == null) {
             return false;
         }
-        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
+        if (node.equals(getGoal())) {
             setLSO(1);
             setLSP(0);
             return true;
@@ -37,7 +37,7 @@ public class Solution {
         String oper = "LRUD";
         while (!priorityQueue.isEmpty()) {
             GraphNode v = priorityQueue.poll();
-            if (Arrays.equals(v.getBoard(), getGoal().getBoard())) {
+            if (v.equals(getGoal())) {
                 setPath(v);
                 setLSP(set.size());
                 setLSO(priorityQueue.size() + set.size());
@@ -61,10 +61,9 @@ public class Solution {
     public boolean dfs(GraphNode node, String operations, int maxDepth) {
         if (maxDepth == -1)
             return false;
-        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) {
+        if (node.equals(getGoal())) {
             setPath(node);
             setLSP(set.size());
-            LSO += getLSP();
             return true;
         }
         if (getMaxRecurDepth() < 20 - maxDepth)
@@ -74,12 +73,11 @@ public class Solution {
         for (int i = 0; i < 4; i++) {
             try {
                 GraphNode el = node.createChild(operations.charAt(i));
-                if (Arrays.equals(el.getBoard(), getGoal().getBoard())) {
+                if (el.equals(getGoal())) {
                     setPath(el);
                     setLSP(set.size());
-                    LSO += getLSP();
                     return true;
-                } else if (!set.contains(el)) {
+                } if (!set.contains(el)) {
                     if (dfs(el, operations, maxDepth - 1)) {
                         return true;
                     }
@@ -93,7 +91,7 @@ public class Solution {
         if (node == null || operations == null || operations.length() != 4) {
             return false;
         }
-        if (Arrays.equals(node.getBoard(), getGoal().getBoard())) { //jesli element grafu jest juz stanem docelowym
+        if (node.equals(getGoal())) { //jesli element grafu jest juz stanem docelowym
             setLSO(1);
             setLSP(0);
             return true;
@@ -107,7 +105,7 @@ public class Solution {
             for (int i = 0; i < 4; i++) { //sprawdzamy sasiadow
                 try {
                     GraphNode el = v.createChild(operations.charAt(i));
-                    if (Arrays.equals(el.getBoard(), getGoal().getBoard())) { //czy boardy sie zgadzaja
+                    if (el.equals(getGoal())) { //czy boardy sie zgadzaja
                         setPath(el);
                         setLSP(set.size());
                         setLSO(getLSP() + queue.size());
