@@ -66,21 +66,19 @@ public class Solution {
             setLSP(set.size());
             return true;
         }
-        if (getMaxRecurDepth() < 20 - maxDepth)
-            maxRecurDepth = 20 - maxDepth;
-        LSO++;
+        if (getMaxRecurDepth() < 5 - maxDepth)
+            maxRecurDepth = 5 - maxDepth;
         set.add(node);
         for (int i = 0; i < 4; i++) {
             try {
                 GraphNode el = node.createChild(operations.charAt(i));
+                LSO++;
                 if (el.equals(getGoal())) {
                     setPath(el);
                     setLSP(set.size());
                     return true;
-                } if (!set.contains(el)) {
-                    if (dfs(el, operations, maxDepth - 1)) {
-                        return true;
-                    }
+                } if (!set.contains(el) && dfs(el, operations, maxDepth - 1)) {
+                    return true;
                 }
             } catch (NullPointerException ignored) {}
         }

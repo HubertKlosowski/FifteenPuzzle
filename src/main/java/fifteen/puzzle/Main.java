@@ -3,11 +3,7 @@ package fifteen.puzzle;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Main {
@@ -60,7 +56,7 @@ public class Main {
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        } else if (Objects.equals(args[0], "dfs") && sol.dfs(root, args[1], 20)) {
+        } else if (Objects.equals(args[0], "dfs") && sol.dfs(root, args[1], 5)) {
             double x = (System.currentTimeMillis() - sec) / 1000.0;
             String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
@@ -147,7 +143,7 @@ public class Main {
         for (byte i = 0; i < 16; i++) {
             res[i] = i;
         }
-        Collections.shuffle(Arrays.asList(res));
+        Collections.shuffle(List.of(res));
         return res;
     }
 }
