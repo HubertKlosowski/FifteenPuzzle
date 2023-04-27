@@ -59,26 +59,26 @@ public class Solution {
     }
 
     public boolean dfs(GraphNode node, String operations, int maxDepth) {
-        if (maxDepth == -1)
+        if (maxDepth == -1 || node == null || operations.length() != 4) {
             return false;
+        }
+        if (getMaxRecurDepth() < 20 - maxDepth) {
+            maxRecurDepth = 20 - maxDepth;
+        }
         if (node.equals(getGoal())) {
             setPath(node);
             setLSP(set.size());
             return true;
         }
-        if (getMaxRecurDepth() < 5 - maxDepth)
-            maxRecurDepth = 5 - maxDepth;
         set.add(node);
         for (int i = 0; i < 4; i++) {
             try {
                 GraphNode el = node.createChild(operations.charAt(i));
                 LSO++;
-                if (el.equals(getGoal())) {
-                    setPath(el);
-                    setLSP(set.size());
-                    return true;
-                } if (!set.contains(el) && dfs(el, operations, maxDepth - 1)) {
-                    return true;
+                if (!set.contains(el)) {
+                    if (dfs(el, operations, maxDepth - 1)) {
+                        return true;
+                    }
                 }
             } catch (NullPointerException ignored) {}
         }

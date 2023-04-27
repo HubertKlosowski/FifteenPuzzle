@@ -56,7 +56,7 @@ public class Main {
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        } else if (Objects.equals(args[0], "dfs") && sol.dfs(root, args[1], 5)) {
+        } else if (Objects.equals(args[0], "dfs") && sol.dfs(root, args[1], 20)) {
             double x = (System.currentTimeMillis() - sec) / 1000.0;
             String[] stats = new String[]{ //sprawdzic stany
                     String.valueOf(sol.getPath().length()),
