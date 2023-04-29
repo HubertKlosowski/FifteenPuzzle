@@ -16,22 +16,14 @@ public class Main {
             plik z ukladem poczatkowym          args[2]
             plik z rozwiazaniem                 args[3]
             plik z statystykami                 args[4]
-            komentuj jak sprawdzasz solution
-            odkomentuj jak generujesz sol i stats i builduj .jar
-            nie usuwaj META-INF, bo wystarczy ze zbuildujesz .jar
         */
 
         byte[] board;
         try {
             board = loadFromFile(args[2]);
-        } catch (IOException e) {
-            System.out.println("Blad!! Nie mozna odczytac danych z pliku lub plik nie istnieje.");
-            System.out.println("Wygenerowano losowa tablice 4x4.");
-            board = generateBoard();
-        } catch (IllegalArgumentException e) {
-            System.out.println("Blad!! Niepoprawny wymiar.");
-            System.out.println("Wygenerowano losowa tablice 4x4.");
-            board = generateBoard();
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return;
         }
         GraphNode root = new GraphNode(row, col);
         root.setBoard(board);
@@ -95,12 +87,21 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         } else {
+            double x = (System.currentTimeMillis() - sec) / 1000.0;
+            String[] stats = new String[]{ //sprawdzic stany
+                    String.valueOf(-1),
+                    String.valueOf(sol.getLSO()),
+                    String.valueOf(sol.getLSP()),
+                    String.valueOf(sol.getMaxRecurDepth()),
+                    String.format("%.3f", x)
+            };
             if (Objects.equals(args[0], "astar")) {
                 System.out.println("Blad!! Algorytm A* nie znalazl zadnych rozwiazan.");
             } else {
                 System.out.println("Blad!! Algorytm " + args[0].toUpperCase() + " nie znalazl zadnych rozwiazan.");
             }
             try {
+                saveToFile(args[4], stats);
                 saveToFile(args[3], new String[]{"-1"});
             } catch (IOException e) {
                 System.out.println(e.getMessage());
@@ -135,15 +136,6 @@ public class Main {
         for (int i = 0; i < n; i++) {
             res[i] = load.get(i + 2);
         }
-        return res;
-    }
-
-    private static byte[] generateBoard() {
-        byte[] res = new byte[16];
-        for (byte i = 0; i < 16; i++) {
-            res[i] = i;
-        }
-        Collections.shuffle(List.of(res));
         return res;
     }
 }
