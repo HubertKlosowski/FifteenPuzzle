@@ -95,7 +95,7 @@ public class Main {
                     String.valueOf(sol.getMaxRecurDepth()),
                     String.format("%.3f", x)
             };
-            if (Objects.equals(args[0], "astar")) {
+            if (Objects.equals(args[0], "astr")) {
                 System.out.println("Blad!! Algorytm A* nie znalazl zadnych rozwiazan.");
             } else {
                 System.out.println("Blad!! Algorytm " + args[0].toUpperCase() + " nie znalazl zadnych rozwiazan.");
