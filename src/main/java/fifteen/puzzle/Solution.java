@@ -82,7 +82,6 @@ public class Solution {
                 }
             } catch (NullPointerException ignored) {}
         }
-        setLSP(set.size());
         return false;
     }
 

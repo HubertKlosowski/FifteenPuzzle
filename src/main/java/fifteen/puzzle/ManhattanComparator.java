@@ -21,7 +21,7 @@ public class ManhattanComparator implements Comparator<GraphNode> {
         int col = node.getCol();
         for (int i = 0; i < board.length; i++) {
             if (board[i] != i + 1 && board[i] != 0) {
-                res += Math.abs((i / row) - (i % col)) + Math.abs(((board[i] - 1) / row) - ((board[i] - 1) % col));
+                res += Math.abs((i / row) - ((board[i] - 1) / row)) + Math.abs((i % col) - ((board[i] - 1) % col));
             }
         }
         return res;
