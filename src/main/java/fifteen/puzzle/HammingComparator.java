@@ -17,8 +17,8 @@ public class HammingComparator implements Comparator<GraphNode> {
     private int HammingMetric(GraphNode node) { //iloma elementami rozni sie stan docelowy od aktualnie sprawdzanego
         int res = 0;
         byte[] board = node.getBoard();
-        for (int i = 0; i < board.length - 1; i++) {
-            if (board[i] != i + 1) {
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] != i + 1 && board[i] != 0) {
                 res++;
             }
         }
