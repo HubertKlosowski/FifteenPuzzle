@@ -106,6 +106,7 @@ def drawForStrategy(data, strategy):
 
 def main():
     os.chdir("..")
+    os.chdir("..")
     os.chdir("Testowanie")
     fileNames = [fileName for fileName in os.listdir(os.getcwd())]
     filesData = []
@@ -114,10 +115,10 @@ def main():
             filesData.append(getData(el))
     os.chdir("..")
     os.chdir("Wykresy")
-    # drawForAll(filesData)
+    drawForAll(filesData)
     drawForStrategy(filesData, "astr")
-    # drawForStrategy(filesData, "dfs")
-    # drawForStrategy(filesData, "bfs")
+    drawForStrategy(filesData, "dfs")
+    drawForStrategy(filesData, "bfs")
     return 0
 
 
