@@ -10,7 +10,6 @@ bins = [1, 2, 3, 4, 5, 6, 7]
 
 
 def getData(statsFileName):
-    os.getcwd()
     if type(statsFileName) is not str:
         raise TypeError
     data = np.loadtxt(os.getcwd() + '/' + statsFileName, dtype=str)
